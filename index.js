@@ -63,7 +63,7 @@ function game(){
                 brick.x = (brick.w+brick.gap)*row;
                 brick.y = 100+(brick.h+brick.gap)*col;
 
-                if(collisionCheck(ball, brick)){
+                if(isColliding(ball, brick)){
 
                     level[col][row] = '#';
                     reverseTrajectory(ball, brick);
@@ -80,7 +80,7 @@ function game(){
 
     borderCollide();
 
-    if(collisionCheck(ball, paddle)){
+    if(isColliding(ball, paddle)){
         reverseTrajectory(ball, paddle);
     }
 
@@ -113,16 +113,24 @@ function borderCollide(){
     }
 }
 
-function collisionCheck(obj1, obj2){
-    return (obj1.x > obj2.x && obj1.x < obj2.x + obj2.w ||
-    obj1.x + obj1.w > obj2.x && obj1.x + obj1.w < obj2.x + obj2.w) &&
-    (obj1.y > obj2.y && obj1.y < obj2.y + obj2.h ||
-    obj1.y + obj1.h > obj2.y && obj1.y + obj1.h < obj2.y + obj2.h);
+function isColliding(obj1, obj2){
+
+    const isLeftEdgeBetweenObj2X = 
+    obj1.x > obj2.x && obj1.x < obj2.x + obj2.w;
+    const isRightEdgeBetweenObj2X = 
+    obj1.x + obj1.w > obj2.x && obj1.x + obj1.w < obj2.x + obj2.w;
+    const isTopEdgeBetweenObj2Y = 
+    obj1.y > obj2.y && obj1.y < obj2.y + obj2.h;
+    const isBottomEdgeBetweenObj2Y = 
+    obj1.y + obj1.h > obj2.y && obj1.y + obj1.h < obj2.y + obj2.h;
+
+    return (isLeftEdgeBetweenObj2X || isRightEdgeBetweenObj2X) &&
+    (isTopEdgeBetweenObj2Y || isBottomEdgeBetweenObj2Y)
 }
 
 function reverseTrajectory(obj1, obj2){
 
-    while(collisionCheck(obj1, obj2)){
+    while(isColliding(obj1, obj2)){
         obj1.x -= Math.sign(obj1.xv);
         obj1.y -= Math.sign(obj1.yv);
     }
